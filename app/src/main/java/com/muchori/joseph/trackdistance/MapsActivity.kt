@@ -1,7 +1,6 @@
 package com.muchori.joseph.trackdistance
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -62,6 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
       isZoomControlsEnabled = true
     }
     typeAndStyle.setMapStyle(map, this)
+
 
     map.setOnMarkerClickListener(this)
     map.setOnMarkerDragListener(this)
