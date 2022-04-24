@@ -1,6 +1,7 @@
 package com.muchori.joseph.trackdistance
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -10,12 +11,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.muchori.joseph.trackdistance.databinding.ActivityMapsBinding
 import com.muchori.joseph.trackdistance.misc.CameraAndViewport
 import com.muchori.joseph.trackdistance.misc.TypeAndStyle
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+  GoogleMap.OnMarkerDragListener {
 
   private lateinit var map: GoogleMap
   private lateinit var binding: ActivityMapsBinding
@@ -51,38 +54,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Add a marker in Meru and move the camera to 10f
     val nairobi = LatLng(-1.2984800775976113, 36.81342312166572)
-    map.addMarker(MarkerOptions().position(nairobi).title("Nairobi"))
-    //map.moveCamera(CameraUpdateFactory.newLatLngZoom(meru, 10f))
-    map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.nairobi))
+    val nairobiMarker =
+      map.addMarker(MarkerOptions().position(nairobi).title("Nairobi").draggable(true))
+    nairobiMarker!!.tag = "Restaurant"
+    map.moveCamera(CameraUpdateFactory.newLatLngZoom(nairobi, 10f))
     map.uiSettings.apply {
       isZoomControlsEnabled = true
     }
     typeAndStyle.setMapStyle(map, this)
-//    map.setMinZoomPreference(15f)
-//    map.setMaxZoomPreference(17f)
 
-//    lifecycleScope.launch {
-//      delay(4000L)
-//      map.moveCamera(CameraUpdateFactory.zoomBy(3f))
-//    }
+    map.setOnMarkerClickListener(this)
+    map.setOnMarkerDragListener(this)
 
     onMapClicked()
     onMpaLongClicked()
-//    lifecycleScope.launch {
-//      delay(4000L)
-//      map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.nairobi), 2000, null)
-//      map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.nairobi), 2000, object : GoogleMap.CancelableCallback {
-//        override fun onCancel() {
-//          Toast.makeText(this@MapsActivity, "Canceled", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        override fun onFinish() {
-//          Toast.makeText(this@MapsActivity, "Finished", Toast.LENGTH_SHORT).show()
-//        }
-//      })
-//      //map.animateCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.nairobiBounds, 0), 2000, null)
-//      //map.setLatLngBoundsForCameraTarget(cameraAndViewport.nairobiBounds) // setting bounds to a location
-//    }
   }
 
   private fun onMapClicked() {
@@ -96,5 +81,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
       map.addMarker(MarkerOptions().position(it).title("New Marker"))
       Toast.makeText(this, "Long Clicked", Toast.LENGTH_SHORT).show()
     }
+  }
+
+  override fun onMarkerClick(marker: Marker): Boolean {
+
+    if (marker != null) {
+      Log.d("Marker", marker.tag as String)
+    } else {
+      Log.d("Marker", "Empty")
+    }
+    return false
+  }
+
+  override fun onMarkerDrag(p0: Marker) {
+    Log.d("Drag", "End")
+  }
+
+  override fun onMarkerDragEnd(p0: Marker) {
+    Log.d("Drag", "End")
+  }
+
+  override fun onMarkerDragStart(p0: Marker) {
+    Log.d("Drag", "Start")
   }
 }
